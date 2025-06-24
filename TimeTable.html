@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic Weekly Timetable</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    select {
+      display: block;
+      margin: 10px auto;
+      padding: 5px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    td {
+      background-color: #fff;
+    }
+    .highlight {
+      background-color: #e3f2fd;
+    }
+
+    .selected-row td {
+  background-color: #dddddd !important;
+}
+  </style>
+</head>
+<body>
+  <h1>Weekly Time Table</h1>
+
+  <label for="dayFilter">Filter by Day:</label>
+  <select id="dayFilter">
+    <option value="all">Show All</option>
+    <option value="mon">Monday</option>
+    <option value="tue">Tuesday</option>
+    <option value="wed">Wednesday</option>
+    <option value="thu">Thursday</option>
+    <option value="fri">Friday</option>
+    <option value="sat">Saturday</option>
+    <option value="sun">Sunday</option>
+  </select>
+
+  <table id="timetable">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th class="mon">Monday</th>
+        <th class="tue">Tuesday</th>
+        <th class="wed">Wednesday</th>
+        <th class="thu">Thursday</th>
+        <th class="fri">Friday</th>
+        <th class="sat">Saturday</th>
+        <th class="sun">Sunday</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>6:00 – 6:30</td><td class="mon">Wake Up</td><td class="tue">Wake Up</td><td class="wed">Wake Up</td><td class="thu">Wake Up</td><td class="fri">Wake Up</td><td class="sat">Wake Up</td><td rowspan="3" class="sun"></td></tr>
+      <tr><td>6:30 – 7:30</td><td class="mon">Gym</td><td class="tue">Gym</td><td class="wed">Gym</td><td class="thu">Gym</td><td class="fri">Gym</td><td class="sat">Gym</td></tr>
+      <tr><td>7:30 – 9:00</td><td class="mon">Freshen Up & Breakfast</td><td class="tue">Freshen Up & Breakfast</td><td class="wed">Freshen Up & Breakfast</td><td class="thu">Freshen Up & Breakfast</td><td class="fri">Freshen Up & Breakfast</td><td class="sat">Freshen Up & Breakfast</td></tr>
+      <tr><td>10:00 – 2:00</td>
+        <td class="mon">JSpiders Classes</td>
+        <td class="tue">JSpiders Classes</td>
+        <td class="wed">JSpiders Classes</td>
+        <td class="thu">JSpiders Classes</td>
+        <td class="fri">JSpiders Classes</td>
+        <td class="sat">JSpiders Classes</td>
+        <td class="sun highlight">WEB Tech</td>
+      </tr>
+      <tr><td>2:00 – 3:30</td><td class="mon">Lunch & Break</td><td class="tue">Lunch & Break</td><td class="wed">Lunch & Break</td><td class="thu">Lunch & Break</td><td class="fri">Lunch & Break</td><td class="sat">Lunch & Break</td><td class="sun">Break</td></tr>
+      <tr><td>3:30 – 5:30</td><td class="mon">Java</td><td class="tue">Java</td><td rowspan="2" class="wed highlight">Aptitude</td><td class="thu">Java</td><td rowspan="2" class="fri highlight">WEB Tech</td><td class="sat">Java</td><td rowspan="2" class="sun highlight">Aptitude</td></tr>
+      <tr><td>6:30 – 8:30</td><td class="mon">Java + DSA</td><td class="tue">Java + DSA</td><td class="thu">Java + DSA</td><td class="sat">Java + DSA</td></tr>
+      <tr><td>8:30 – 9:30</td><td class="mon">Dinner</td><td class="tue">Dinner</td><td class="wed">Dinner</td><td class="thu">Dinner</td><td class="fri">Dinner</td><td class="sat">Dinner</td><td class="sun">Dinner</td></tr>
+      <tr><td>9:30 – 11:30</td><td class="mon">Practice</td><td class="tue">Practice</td><td class="wed">Practice</td><td class="thu">Practice</td><td class="fri">Practice</td><td class="sat">Java + DSA</td><td class="sun">Review</td></tr>
+      <tr><td>11:30 – 6:00</td><td class="mon">Sleep</td><td class="tue">Sleep</td><td class="wed">Sleep</td><td class="thu">Sleep</td><td class="fri">Sleep</td><td class="sat">Sleep</td><td class="sun">Sleep</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const dayFilter = document.getElementById('dayFilter');
+    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+    dayFilter.addEventListener('change', () => {
+      const selected = dayFilter.value;
+      days.forEach(day => {
+        const elements = document.querySelectorAll(`.${day}`);
+        elements.forEach(el => {
+          el.style.display = (selected === 'all' || selected === day) ? 'table-cell' : 'none';
+        });
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      dayFilter.dispatchEvent(new Event('change'));
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+  const rows = document.querySelectorAll('#timetable tbody tr');
+
+  rows.forEach(row => {
+    const timeCell = row.querySelector('td:first-child');
+    if (timeCell) {
+      timeCell.addEventListener('click', () => {
+        const isSelected = row.classList.contains('selected-row');
+        
+        // Remove highlight from all rows
+        rows.forEach(r => r.classList.remove('selected-row'));
+
+        // Toggle: add back only if it wasn't already selected
+        if (!isSelected) {
+          row.classList.add('selected-row');
+        }
+      });
+    }
+  });
+});
+
+  </script>
+
+</body>
+</html>
